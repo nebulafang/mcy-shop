@@ -187,7 +187,7 @@ prepare_source() {
     install -d -m 0755 "$APP_DIR"
     printf '%s\n' "$APP_DIR" > "$SOURCE_FILE"
     chmod 0600 "$SOURCE_FILE"
-    tar -C "$source_dir" --exclude='./.git' --exclude='./runtime' --exclude='./deploy.sh' --exclude='./DEPLOY.md' -cf - . | tar -C "$APP_DIR" -xf -
+    tar -C "$source_dir" --exclude='./.git' --exclude='./runtime' --exclude='./deploy.sh' --exclude='./uninstall.sh' --exclude='./DEPLOY.md' -cf - . | tar -C "$APP_DIR" -xf -
     if [[ ! -f $APP_DIR/vendor/autoload.php ]]; then
         [[ -f $APP_DIR/composer.phar ]] || die '源码缺少 vendor 和 composer.phar。'
         (cd "$APP_DIR" && COMPOSER_ALLOW_SUPERUSER=1 php8.4 composer.phar install --no-dev --prefer-dist --no-interaction --no-scripts --no-plugins)
@@ -275,7 +275,7 @@ EOF
 
     location ~ /\. { return 404; }
     location ~* ^/(config|kernel|runtime|vendor|deploy|tests)(/|$) { return 404; }
-    location ~* ^/(bin|console\.sh|dev\.sh|deploy\.sh|composer\.(json|lock|phar)|README\.md|DEPLOY\.md|LICENSE)$ { return 404; }
+    location ~* ^/(bin|console\.sh|dev\.sh|deploy\.sh|uninstall\.sh|composer\.(json|lock|phar)|README\.md|DEPLOY\.md|LICENSE)$ { return 404; }
     location ^~ /install { return 404; }
 
     # 只执行前端入口；上传目录及插件内 PHP 文件均不能直接执行。

@@ -71,6 +71,32 @@ certbot renew --dry-run
 
 FPM 模式适用于常规商城功能；依赖 Swoole 的 WebSocket、常驻后台进程类插件需要另外部署 CLI 服务。本脚本不自动开放 MariaDB 公网访问，不更改防火墙或其他 Nginx 站点，不授予应用用户 sudo 权限。商城内置的“自动配置分站 Nginx”需要另行配置，本脚本仅部署上述主域名。
 
+## 彻底卸载商城
+
+在保存源码的目录执行 `sudo bash uninstall.sh`。旧版源码没有该文件时，可以单独下载：
+
+```bash
+curl -fL https://raw.githubusercontent.com/nebulafang/mcy-shop/main/uninstall.sh -o /tmp/mcy-shop-uninstall.sh
+sudo bash /tmp/mcy-shop-uninstall.sh
+```
+
+脚本读取实际部署记录，展示删除范围后要求输入域名确认。**执行会永久删除商城数据库、订单、账号、上传文件和插件，不会自动备份。**
+
+```bash
+# 只预览，不删除商城数据或修改服务
+sudo bash uninstall.sh --dry-run
+
+# 已确认删除范围，跳过交互确认
+sudo bash uninstall.sh --yes
+
+# 证书同时被其他网站使用时保留证书及其续期配置
+sudo bash uninstall.sh --keep-certificate
+```
+
+删除范围包含部署目录、`mcy_shop` 数据库及其 localhost 用户、专属 Nginx 站点和 PHP-FPM 池、`mcy-shop` 系统用户、本站日志（含轮转日志）、ACME 文件、本站证书及其续期配置、续期重载钩子、部署记录和初始密码文件。预览仍需 root 权限，以读取受保护的部署记录。
+
+共享的 Nginx、PHP、MariaDB、Certbot 软件包和续期定时器会保留，其他站点及数据库不受影响。DNS 记录、你上传到 `/root/mcy-shop` 等位置的原始源码、自行制作的备份及共享系统日志不在自动删除范围内。卸载中断后可重跑同一命令；记录缺失或资源归属不匹配时会停止，不猜测删除目标。
+
 ## 重跑与故障恢复
 
 - 证书申请失败会明确退出，HTTP 站点和已初始化数据库会保留。检查 DNS（包括 AAAA）、端口和 `/var/log/letsencrypt/letsencrypt.log` 后重跑原命令。

@@ -28,6 +28,7 @@
 ## 安装文档
 - 官方文档：[https://wiki.mcy.im](https://wiki.mcy.im)
 - Debian 13 原生一键部署（默认 `shop.584136.xyz`）：[部署说明](DEPLOY.md)，在项目目录运行 `sudo bash deploy.sh`。
+- 配套彻底卸载：`sudo bash uninstall.sh`，永久删除商城数据及专属配置，保留共享系统软件。先用 `sudo bash uninstall.sh --dry-run` 预览。
 
 ## 快速体验
 - 后台演示地址：http://42.51.0.159:4399/admin
